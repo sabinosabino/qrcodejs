@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Configurações básicas do documento HTML -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leitor QR Code</title>
+    <!-- Importando a biblioteca para leitura de QR Code -->
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <style>
+        /* Container principal que centraliza todo o conteúdo */
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Container específico para o scanner */
+        .scanner-container {
+            width: 100%;
+            max-width: 640px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Estilo para a área do leitor QR Code */
+        #reader {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        /* Estilo para a área que mostra o resultado da leitura */
+        #result {
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+
+        /* Estilo para os títulos */
+        h1, h2 {
+            color: #333;
+            text-align: center;
+        }
+
+        /* Estilo para o botão */
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        /* Efeito hover no botão */
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <!-- Estrutura principal da página -->
+    <div class="container">
+        <h1>Leitor QR Code</h1>
+        
+        <!-- Container do scanner -->
+        <div class="scanner-container">
+            <h2>Posicione o QR Code na câmera</h2>
+            <!-- Área onde o leitor QR Code será renderizado -->
+            <div id="reader"></div>
+            <!-- Área onde o resultado será exibido -->
+            <div id="result"></div>
+        </div>
+
+        <!-- Botão para iniciar o scanner -->
+        <button onclick="startQRScanner()">Iniciar Scanner</button>
+    </div>
+
+    <script>
+        // Variável global para armazenar a instância do leitor QR Code
+        let html5QrCode = null;
+
+        // Função que inicia o scanner de QR Code
+        function startQRScanner() {
+            // Verifica se o scanner já foi iniciado
+            if (html5QrCode === null) {
+                // Cria uma nova instância do leitor QR Code
+                html5QrCode = new Html5Qrcode("reader");
+                
+                // Configurações do scanner
+                const config = { 
+                    fps: 10, // Frames por segundo
+                    qrbox: { width: 250, height: 250 } // Tamanho da área de leitura
+                };
+
+                // Inicia o scanner com as configurações definidas
+                html5QrCode.start(
+                    { facingMode: "environment" }, // Usa a câmera traseira
+                    config,
+                    onQRCodeSuccess, // Função chamada quando um QR Code é detectado
+                    onQRCodeError    // Função chamada quando ocorre um erro
+                );
+            }
+        }
+
+        // Função chamada quando um QR Code é detectado com sucesso
+        function onQRCodeSuccess(decodedText, decodedResult) {
+            // Exibe o texto decodificado do QR Code na tela
+            document.getElementById("result").innerHTML = `QR Code detectado: ${decodedText}`;
+        }
+
+        // Função chamada quando ocorre um erro na leitura
+        function onQRCodeError(errorMessage) {
+            // Ignorar erros de QR code não detectado
+            // Isso evita mensagens de erro desnecessárias no console
+        }
+    </script>
+</body>
+</html>
